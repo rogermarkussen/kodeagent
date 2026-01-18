@@ -4,34 +4,48 @@ Du skal koble til en eksisterende kodebase som brukeren vil jobbe med.
 
 ## Steg
 
-### 1. Spør om sti
+### 1. Sjekk historikk
 
-Spør brukeren om den absolutte stien til kodebasen de vil jobbe med.
+Les `workspace/history.json` for å se om det finnes tidligere prosjekter.
 
-Eksempel på spørsmål:
-> Hvilken kodebase vil du jobbe med? Oppgi absolutt sti (f.eks. `/home/bruker/mitt-prosjekt`)
+Hvis historikk finnes og bruker ikke oppga en sti som argument:
+- Vis liste over siste 10 prosjekter (nyeste først)
+- Marker forrige prosjekt som default
+- La brukeren velge fra listen ELLER oppgi ny sti
 
-### 2. Verifiser at mappen eksisterer
+Eksempel på visning:
+```
+Tidligere prosjekter:
 
-Bruk `ls` for å verifisere at mappen finnes og inneholder kode:
-```bash
-ls -la /oppgitt/sti
+1. [DEFAULT] nytt-testprod (/home/bruker/dev/nytt-testprod) - sist brukt: 18.01.2026
+2. mitt-api (/home/bruker/dev/mitt-api) - sist brukt: 15.01.2026
+3. frontend-app (/home/bruker/dev/frontend-app) - sist brukt: 10.01.2026
+
+Velg nummer (1-3) eller oppgi ny sti:
 ```
 
-Hvis mappen ikke finnes, informer brukeren og be om riktig sti.
+### 2. Håndter valg
 
-### 3. Opprett workspace-struktur
+**Hvis bruker velger fra listen:**
+- Hent prosjektinfo fra historikken
+- Oppdater `last_used` i history.json
+- Sett prosjektet som aktivt
 
-Hvis `workspace/` ikke allerede er satt opp, opprett:
+**Hvis bruker oppgir ny sti:**
+- Verifiser at mappen eksisterer med `ls -la`
+- Hvis mappen ikke finnes, informer og be om riktig sti
 
+### 3. Opprett/oppdater workspace-struktur
+
+For nytt prosjekt, opprett:
 ```bash
-mkdir -p workspace/memory workspace/docs/features
+mkdir -p workspace/projects/<prosjekt-navn>/memory
+mkdir -p workspace/projects/<prosjekt-navn>/docs/features
 ```
 
-### 4. Opprett config.json
+### 4. Opprett/oppdater config.json
 
-Lag `workspace/config.json` med følgende struktur:
-
+Lag `workspace/projects/<prosjekt-navn>/config.json`:
 ```json
 {
   "target_path": "/absolutt/sti/fra/bruker",
@@ -40,16 +54,43 @@ Lag `workspace/config.json` med følgende struktur:
 }
 ```
 
-Bruk faktisk timestamp og trekk ut mappenavn fra stien.
+### 5. Oppdater active.json
 
-### 5. Initialiser memory-filer
+Sett aktivt prosjekt i `workspace/active.json`:
+```json
+{
+  "project": "prosjekt-navn"
+}
+```
+
+### 6. Oppdater history.json
+
+Legg til/oppdater prosjektet i `workspace/history.json`:
+- Sett `last_used` til nåværende timestamp
+- Flytt prosjektet til toppen av listen
+- Behold maks 10 prosjekter (fjern eldste hvis over)
+
+```json
+{
+  "projects": [
+    {
+      "name": "prosjekt-navn",
+      "path": "/absolutt/sti",
+      "last_used": "YYYY-MM-DDTHH:mm:ss.sssZ",
+      "connected_at": "YYYY-MM-DDTHH:mm:ss.sssZ"
+    }
+  ]
+}
+```
+
+### 7. Initialiser memory-filer (kun for nye prosjekter)
 
 Opprett tomme JSONL-filer:
-- `workspace/memory/decisions.jsonl`
-- `workspace/memory/errors.jsonl`
-- `workspace/memory/discoveries.jsonl`
+- `workspace/projects/<prosjekt>/memory/decisions.jsonl`
+- `workspace/projects/<prosjekt>/memory/errors.jsonl`
+- `workspace/projects/<prosjekt>/memory/discoveries.jsonl`
 
-### 6. Bekreft til brukeren
+### 8. Bekreft til brukeren
 
 Gi en oppsummering:
 
@@ -57,11 +98,12 @@ Gi en oppsummering:
 > Sti: [target_path]
 >
 > Neste steg:
-> - Kjør `/kodeagent:analyze` for å analysere kodebasen
-> - Eller start direkte med `/kodeagent:feature`, `/kodeagent:review`, eller `/kodeagent:fix`
+> - Kjør `/analyze` for å analysere kodebasen
+> - Eller start direkte med `/feature`, `/review`, eller `/fix`
 
 ## Feilhåndtering
 
 - Hvis stien er relativ, be om absolutt sti
 - Hvis mappen ikke finnes, be om korrekt sti
 - Hvis mappen er tom, advar brukeren men fortsett
+- Hvis prosjekt allerede finnes i historikk men med annen sti, spør om oppdatering
