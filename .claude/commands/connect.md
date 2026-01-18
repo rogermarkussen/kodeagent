@@ -90,12 +90,39 @@ Opprett tomme JSONL-filer:
 - `workspace/projects/<prosjekt>/memory/errors.jsonl`
 - `workspace/projects/<prosjekt>/memory/discoveries.jsonl`
 
-### 8. Bekreft til brukeren
+### 8. Oppsummer tidligere arbeid (kun for eksisterende prosjekter)
+
+Hvis prosjektet har eksisterende data, les og oppsummer:
+
+1. **Les memory-filene** (siste 5-10 entries fra hver):
+   - `decisions.jsonl` - viktige beslutninger
+   - `errors.jsonl` - feil som ble løst
+   - `discoveries.jsonl` - oppdagelser om kodebasen
+
+2. **Sjekk docs/**:
+   - Finnes `analysis.md`? → Prosjektet er analysert
+   - Finnes filer i `features/`? → Features er dokumentert
+
+3. **Gi kort oppsummering** (maks 5-8 linjer):
+
+```
+Tidligere arbeid på dette prosjektet:
+- Analysert: Ja (TypeScript/React-app med REST API)
+- Beslutninger: 3 arkitekturvalg tatt
+- Feil løst: 2
+- Features dokumentert: auth-flow, dashboard
+
+Sist jobbet: 15.01.2026
+```
+
+### 9. Bekreft til brukeren
 
 Gi en oppsummering:
 
 > ✓ Koblet til: [project_name]
 > Sti: [target_path]
+>
+> [Tidligere arbeid-oppsummering hvis eksisterende prosjekt]
 >
 > Neste steg:
 > - Kjør `/analyze` for å analysere kodebasen
