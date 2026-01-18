@@ -33,12 +33,13 @@ Hvis `workspace/active.json` ikke finnes:
 
 | Kommando | Beskrivelse |
 |----------|-------------|
-| `/kodeagent:connect` | Koble til en eksisterende kodebase |
-| `/kodeagent:analyze` | Analyser kodebasen grundig |
-| `/kodeagent:feature` | Planlegg og implementer ny funksjonalitet |
-| `/kodeagent:review` | Gjør kodegjennomgang |
-| `/kodeagent:fix` | Fiks bugs og issues |
-| `/kodeagent:polars` | Polars-ekspert for effektiv databehandling |
+| `/connect` | Koble til en eksisterende kodebase |
+| `/analyze` | Analyser kodebasen grundig |
+| `/feature` | Planlegg og implementer ny funksjonalitet |
+| `/review` | Gjør kodegjennomgang |
+| `/fix` | Fiks bugs og issues |
+| `/commit` | Commit i tilkoblet prosjekt (--push, --amend) |
+| `/polars` | Polars-ekspert for effektiv databehandling |
 
 ## Mappestruktur
 
